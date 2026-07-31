@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>We Trust Dental Clinic — ប្រព័ន្ធគិតលុយ</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ============ NAV ============ -->
+  <nav class="app-nav" id="appNav">
+    <div class="app-nav-inner">
+      <div class="app-brand">
+        <span class="app-brand-icon">🦷</span>
+        <div class="app-brand-text">
+          <span class="app-brand-title">ប្រព័ន្ធគិតលុយពេទ្យធ្មេញ</span>
+          <span class="app-brand-sub" id="navClinicName">We Trust Dental Clinic</span>
+        </div>
+      </div>
+      <div class="app-tabs" id="appTabs">
+        <button class="tab-btn active" data-view="invoice" onclick="switchView('invoice')">
+          <span class="tab-icon">🧾</span><span class="tab-label">វិក្កយបត្រ</span>
+        </button>
+        <button class="tab-btn" data-view="history" onclick="switchView('history')">
+          <span class="tab-icon">🕘</span><span class="tab-label">ប្រវត្តិ</span>
+        </button>
+        <button class="tab-btn" data-view="settings" onclick="switchView('settings')">
+          <span class="tab-icon">⚙️</span><span class="tab-label">កំណត់</span>
+        </button>
+        <button class="tab-btn" data-view="prescription" onclick="switchView('prescription')">
+          <span class="tab-icon">💊</span><span class="tab-label">វេជ្ជបញ្ជា</span>
+        </button>
+      </div>
+      <button class="new-invoice-btn" onclick="newInvoice()">
+        <span>＋</span><span class="new-invoice-label">វិក្កយបត្រថ្មី</span>
+      </button>
+      
+    </div>
+  </nav>
+
+  <main class="app-main">
+
+    <!-- ============ VIEW: INVOICE ============ -->
+    <section class="view active" id="view-invoice">
+      <div class="card" id="receiptCard">
+
+        <div class="header">
+          <div class="logo-row">
+            <img id="clinicLogoImg" class="clinic-logo-img" style="display:none;" alt="Logo">
+            <div class="clinic-name-display" id="clinicNameDisplay">We Trust Dental Clinic</div>
+          </div>
+          <div class="clinic-sub-display" id="clinicSubDisplay">Tel: 092 463 646 | Phnom Penh, Cambodia</div>
+          <div class="clinic-sub-display clinic-fb-display" id="clinicFbDisplay"></div>
+        </div>
+
+        <!-- ============ PRINT-ONLY LETTERHEAD ============ -->
+        <div class="inv-print-only inv-print-letterhead">
+          <div class="inv-print-top">
+            <div class="inv-print-brand">
+              <img id="invPrintLogo" class="inv-print-logo" style="display:none;" alt="Logo">
+              <div class="inv-print-brand-text">
+                <div class="inv-print-name-kh" id="invPrintNameKh">We Trust Dental Clinic</div>
+              </div>
+            </div>
+            <div class="inv-print-contact">
+              <div id="invPrintEmailRow">Email: <span id="invPrintEmail"></span></div>
+              <div id="invPrintWebsiteRow">Website: <span id="invPrintWebsite"></span></div>
+              <div id="invPrintFbRow">Facebook: <span id="invPrintFb"></span></div>
+              <div id="invPrintPhoneRow">Tel: <span id="invPrintPhone"></span></div>
+            </div>
+          </div>
+          <div class="inv-print-address" id="invPrintAddress"></div>
+          <div class="inv-print-title">
+            <div class="inv-print-title-kh">វិក្កយបត្រ</div>
+            <div class="inv-print-title-en">INVOICE</div>
+          </div>
+          <div class="inv-print-details">
+            <div class="inv-print-col">
+              <div>Invoice No : <b id="invPrintNo"></b></div>
+              <div>Date : <b id="invPrintDate"></b></div>
+              <div>Cashier : <b id="invPrintCashier"></b></div>
+              <div>Doctor : <b id="invPrintDoctor"></b></div>
+            </div>
+            <div class="inv-print-col">
+              <div>Patient Name : <b id="invPrintPatientName"></b></div>
+              <div>Sex : <b id="invPrintGender"></b>&nbsp;&nbsp;&nbsp;Age : <b id="invPrintAge"></b></div>
+              <div>Tel : <b id="invPrintPatientPhone"></b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="body">
+          <div class="section-label">ព័ត៌មានវិក្កយបត្រ / Invoice Details</div>
+          <div class="info-block" id="invDetailsBlock">
+          <div class="info-row">
+            <div class="info-field">
+              <label>លេខវិក្កយបត្រ / Invoice No</label>
+              <input id="invoiceNo" placeholder="Invoice No">
+            </div>
+            <div class="info-field">
+              <label>អ្នកគិតលុយ / Cashier</label>
+              <input id="cashierName" placeholder="ឈ្មោះអ្នកគិតលុយ">
+            </div>
+          </div>
+          <div class="info-row">
+            <div class="info-field">
+              <label>គ្រូពេទ្យព្យាបាល / Doctor</label>
+              <input id="doctorName" placeholder="ឈ្មោះគ្រូពេទ្យ">
+            </div>
+            <div class="info-field">
+              <label>កាលបរិច្ឆេទ / Date</label>
+              <input id="invDate" type="date">
+            </div>
+          </div>
+          </div>
+
+          <div class="section-label">ព័ត៌មានអ្នកជំងឺ / Patient Details</div>
+          <div class="info-block" id="patientDetailsBlock">
+          <div class="info-row">
+            <div class="info-field">
+              <label>ត្រកូល / Surname</label>
+              <input id="surname" placeholder="ត្រកូល">
+            </div>
+            <div class="info-field">
+              <label>ឈ្មោះ / Given Name</label>
+              <input id="givenName" placeholder="ឈ្មោះ">
+            </div>
+          </div>
+          <div class="info-row">
+            <div class="info-field" style="max-width:130px;">
+              <label>ភេទ / Gender</label>
+              <select id="gender">
+                <option value="">—</option>
+                <option value="ប្រុស">ប្រុស</option>
+                <option value="ស្រី">ស្រី</option>
+              </select>
+            </div>
+            <div class="info-field" style="max-width:100px;">
+              <label>អាយុ / Age</label>
+              <input id="age" type="number" min="0" placeholder="អាយុ">
+            </div>
+            <div class="info-field">
+              <label>លេខទូរស័ព្ទអ្នកជំងឺ / Patient Phone</label>
+              <input id="patientPhone" placeholder="0XX XXX XXX">
+            </div>
+          </div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-title">តារាងធ្មេញ / Tooth Chart (FDI)</div>
+            <button class="arch-label" onclick="selectAllUpper()" style="cursor:pointer;">លើ · Upper</button>
+            <div class="quad-header">
+              <div class="quad-group"><button class="quad-label" onclick="selectRange(11,18)">UR</button></div>
+              <div class="quad-group"><button class="quad-label" onclick="selectRange(21,28)">UL</button></div>
+            </div>
+            <div class="arch-row" id="upperRow"></div>
+            <button class="arch-label" onclick="selectAllLower()" style="cursor:pointer;">ក្រោម · Lower</button>
+            <div class="quad-header">
+              <div class="quad-group"><button class="quad-label" onclick="selectRange(41,48)">LR</button></div>
+              <div class="quad-group"><button class="quad-label" onclick="selectRange(31,38)">LL</button></div>
+            </div>
+            <div class="arch-row" id="lowerRow"></div>
+            <div class="legend">
+              <span><i class="dot green"></i> បានព្យាបាល (Treated)</span>
+              <span><i class="dot red"></i> មិនទាន់ព្យាបាល (Untreated)</span>
+              <button class="select-all-btn" onclick="selectAllTeeth()">Full Mouth</button>
+            </div>
+            <div class="chart-hint">ចុចធ្មេញមួយ ឬច្រើន រួចបញ្ចូលសេវាកម្មខាងក្រោម</div>
+          </div>
+
+          <div class="service-box">
+            <div class="service-box-title">ជ្រើសរើស ឬវាយបញ្ចូលសេវាកម្ម / Select a Treatment</div>
+            <div class="pending-label" id="pendingLabel" style="display:none;"></div>
+            <div class="service-row">
+              <input id="serviceInput" list="serviceOptions" placeholder="វាយឈ្មោះសេវា ឬជ្រើស" oninput="onServiceInputChange()" onkeydown="if(event.key==='Enter'){event.preventDefault();addServiceToInvoice();}">
+              <datalist id="serviceOptions"></datalist>
+              <input id="servicePriceInput" type="number" step="0.01" placeholder="0 = Free" style="max-width:85px;" onkeydown="if(event.key==='Enter'){event.preventDefault();addServiceToInvoice();}">
+              <input id="serviceQtyInput" type="number" min="1" value="1" placeholder="ចំនួន" style="max-width:60px;" onkeydown="if(event.key==='Enter'){event.preventDefault();addServiceToInvoice();}">
+              <button class="add-service-btn" onclick="addServiceToInvoice()">➕ បន្ថែម</button>
+            </div>
+            <div class="service-hint">សេវាកម្មថ្មីនឹងត្រូវបានរក្សាទុកដោយស្វ័យប្រវត្តិ — គ្រប់គ្រងទាំងអស់នៅផ្នែក <a href="#" onclick="switchView('settings');return false;">កំណត់ / Settings</a></div>
+          </div>
+
+          <table class="items screen-table">
+            <thead>
+              <tr>
+                <th style="width:56px;">Tooth#</th>
+                <th>Treatment</th>
+                <th class="num" style="width:50px;">Qty</th>
+                <th class="num" style="width:70px;">Price</th>
+                <th class="num" style="width:70px;">Discount</th>
+                <th class="num" style="width:75px;">Subtotal</th>
+                <th style="width:20px;"></th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+          <table class="items print-table">
+            <thead>
+              <tr>
+                <th style="width:70px;">Tooth#</th>
+                <th>Treatment</th>
+                <th class="num" style="width:50px;">Qty</th>
+                <th class="num" style="width:70px;">Price</th>
+                <th class="num" style="width:75px;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody id="printRows"></tbody>
+          </table>
+          <div class="add-row">
+            <button class="add-btn" onclick="addRow()">+</button>
+          </div>
+
+
+          <div class="inv-summary-row" id="invSummaryRow">
+            <div class="inv-notes-box">
+              <label class="inv-notes-label">ចំណាំ / Note</label>
+              <textarea id="invoiceNotes" class="inv-notes-textarea" placeholder=""></textarea>
+            </div>
+
+            <table class="inv-totals-table" id="invTotalsTable">
+              <tbody>
+                <tr>
+                  <td>ប្រាក់សរុប<br><span>Sub Total</span></td>
+                  <td class="num" id="subtotalLine">$0.00</td>
+                </tr>
+                <tr id="discountRow">
+                  <td>បញ្ចុះថ្លៃ<br><span>Discount</span></td>
+                  <td class="num">
+                    <div class="inv-inline-inputs">
+                      <input id="discountValue" type="number" min="0" step="0.01" value="0">
+                      <select id="discountType">
+                        <option value="percent">%</option>
+                        <option value="amount">$</option>
+                      </select>
+                    </div>
+                  </td>
+                </tr>
+                <tr id="grandTotalRow" class="inv-total-row">
+                  <td>សរុប<br><span>Grand Total</span></td>
+                  <td class="num">
+                    <div id="grandUsd">$0.00</div>
+                    <div class="inv-khr" id="grandKhr">≈ 0 ៛</div>
+                  </td>
+                </tr>
+                <tr id="paidRow">
+                  <td>បានបង់<br><span>Paid</span></td>
+                  <td class="num">
+                    <div class="inv-inline-inputs">
+                      <input id="depositValue" class="inv-inline-input-solo" type="number" min="0" step="0.01" value="0">
+                      <select id="depositCurrency">
+                        <option value="usd">$</option>
+                        <option value="khr">៛</option>
+                      </select>
+                    </div>
+                  </td>
+                </tr>
+                <tr id="totalDueRow" class="inv-due-row">
+                  <td>ទឹកប្រាក់នៅសល់<br><span>Total Amount Due</span></td>
+                  <td class="num">
+                    <div id="balanceDue">$0.00</div>
+                    <div class="inv-khr" id="balanceDueKhr">≈ 0 ៛</div>
+                  </td>
+                </tr>
+                <tr id="totalPaidRow" class="inv-total-row">
+                  <td>ប្រាក់សរុបបានបង់<br><span>Total Amount Paid</span></td>
+                  <td class="num" id="totalPaidDisplay">$0.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="inv-rate-line" id="rateDisplayLine">1$ = 4,100 ៛</div>
+
+          <div class="inv-print-btn-row">
+            <button class="print-btn" onclick="saveInvoiceAndPrint()" title="រក្សាទុក ហើយបោះពុម្ព">
+              <span class="print-btn-icon">🖨️</span><span class="print-btn-label">បោះពុម្ព</span>
+            </button>
+          </div>
+
+          <div class="signature-box">
+            <div class="signature-line"></div>
+            <div class="signature-label">ហត្ថលេខាអ្នកគិតលុយ<br>Cashier Signature</div>
+          </div>
+
+          <button class="clear-link" onclick="clearAll()">សម្អាតទាំងអស់ / Clear</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VIEW: HISTORY ============ -->
+    <section class="view" id="view-history">
+      <div class="card page-card">
+        <div class="page-head">
+          <h2>ប្រវត្តិវិក្កយបត្រ / Invoice History</h2>
+          <p>ស្វែងរក បើកមើល ឬបន្តកែសម្រួលវិក្កយបត្រចាស់ៗ</p>
+        </div>
+        <div class="page-body">
+          <div class="search-row">
+            <span class="search-icon">🔎</span>
+            <input id="historySearch" placeholder="ស្វែងរកតាមឈ្មោះអ្នកជំងឺ..." oninput="applyHistoryFilters()">
+          </div>
+          <div class="filter-pills" id="historyFilters">
+            <button class="filter-pill active" data-filter="all" onclick="setHistoryFilter('all')">ទាំងអស់</button>
+            <button class="filter-pill" data-filter="paid" onclick="setHistoryFilter('paid')">✅ បង់ប្រាក់គ្រប់</button>
+            <button class="filter-pill" data-filter="partial" onclick="setHistoryFilter('partial')">🟡 បង់ខ្លះ</button>
+            <button class="filter-pill" data-filter="unpaid" onclick="setHistoryFilter('unpaid')">🔴 មិនទាន់បង់</button>
+          </div>
+          <div class="history-count" id="historyCount"></div>
+          <div class="history-list" id="historyList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VIEW: SETTINGS ============ -->
+    <section class="view" id="view-settings">
+      <div class="card page-card">
+        <div class="page-head">
+          <h2>ការកំណត់ / Settings</h2>
+          <p>គ្រប់គ្រងព័ត៌មានគ្លីនិក អត្រាប្តូរប្រាក់ និងសេវាកម្ម</p>
+        </div>
+        <div class="page-body">
+
+          <div class="settings-section">
+            <h3>ព័ត៌មានគ្លីនិក / Clinic Information</h3>
+            <p class="settings-hint">ព័ត៌មាននេះនឹងបង្ហាញនៅលើក្បាលវិក្កយបត្រ និងក្នុងការបោះពុម្ព</p>
+            <div class="settings-field">
+              <label>Logo គ្លីនិក / Clinic Logo</label>
+              <input type="file" id="clinicLogoInput" accept="image/*" onchange="handleLogoUpload(event)">
+              <div id="clinicLogoPreview" style="margin-top:10px;"></div>
+            </div>
+            <div class="settings-field">
+              <label>ឈ្មោះគ្លីនិក / Clinic Name</label>
+              <input id="clinicName" placeholder="We Trust Dental Clinic">
+            </div>
+            <div class="settings-field">
+              <label>ព័ត៌មានទំនាក់ទំនង / Contact Info</label>
+              <input id="clinicSub" placeholder="Tel: 092 463 646 | Phnom Penh, Cambodia">
+            </div>
+            <div class="settings-field">
+              <label>ទំព័រ Facebook / Facebook Page</label>
+              <input id="clinicFacebook" placeholder="Facebook: your clinic page name">
+            </div>
+            <div class="settings-field">
+              <label>អាសយដ្ឋាន / Address <span style="font-weight:400;color:var(--sub);">(សម្រាប់ក្បាលការបោះពុម្ព)</span></label>
+              <input id="clinicAddress" placeholder="#20, St 289, Sangkat Toul Krok, Khan Toulkork, Phnom Penh, Cambodia">
+            </div>
+            <div class="settings-field">
+              <label>អ៊ីម៉ែល / Email</label>
+              <input id="clinicEmail" placeholder="clinic@email.com">
+            </div>
+            <div class="settings-field">
+              <label>គេហទំព័រ / Website</label>
+              <input id="clinicWebsite" placeholder="www.yourclinic.com">
+            </div>
+            <div class="settings-field">
+              <label>លេខទូរស័ព្ទ (សម្រាប់ក្បាលការបោះពុម្ព) / Phone</label>
+              <input id="clinicPhone" placeholder="012 84 70 83">
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3>អត្រាប្តូរប្រាក់ / Exchange Rate</h3>
+            <p class="settings-hint">ប្រើសម្រាប់បំប្លែងសរុបពី USD ទៅជា KHR លើវិក្កយបត្រ</p>
+            <div class="settings-field settings-field-inline">
+              <label>1 $ =</label>
+              <input id="exRate" type="number" value="4100">
+              <span>៛</span>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3>សេវាកម្មដែលរក្សាទុក / Saved Services</h3>
+            <p class="settings-hint">សេវាកម្មទាំងនេះនឹងលេចឡើងជាជម្រើសរហ័សនៅពេលបង្កើតវិក្កយបត្រ</p>
+            <div class="service-row service-add-row">
+              <input id="newServiceName" placeholder="ឈ្មោះសេវាកម្ម / Service name">
+              <input id="newServicePrice" type="number" step="0.01" placeholder="តម្លៃ ($)" style="max-width:110px;">
+              <button class="add-service-btn" onclick="addPresetServiceDirect()">➕ បន្ថែម</button>
+            </div>
+            <div class="service-manage-list" id="serviceManageList"></div>
+          </div>
+
+          <div class="settings-section">
+            <h3>ថ្នាំដែលរក្សាទុក / Saved Medications</h3>
+            <p class="settings-hint">ថ្នាំទាំងនេះនឹងលេចឡើងជាជម្រើសរហ័សនៅពេលបង្កើតវេជ្ជបញ្ជា</p>
+            <div class="service-row service-add-row">
+              <input id="newMedName" placeholder="ឈ្មោះថ្នាំ / Medication name">
+              <input id="newMedDosage" placeholder="របៀបប្រើ (default)" style="max-width:150px;">
+              <button class="add-service-btn" onclick="addPresetMedicationDirect()">➕ បន្ថែម</button>
+            </div>
+            <div class="service-manage-list" id="medManageList"></div>
+          </div>
+        </div>
+     
+    </section>
+
+    <!-- ============ VIEW: PRESCRIPTION ============ -->
+    <section class="view" id="view-prescription">
+      <div id="prescriptionSection">
+
+        <div class="rx-print-only rx-print-title">
+          <img id="rxClinicLogoImg" class="clinic-logo-img" style="display:none;" alt="Logo">
+          <div id="rxClinicNameDisplay">We Trust Dental Clinic</div>
+          <div id="rxClinicSubDisplay">Tel: 092 463 646 | Phnom Penh, Cambodia</div>
+          <h1>វេជ្ជបញ្ជា / PRESCRIPTION</h1>
+          <div id="rxPrintDate"></div>
+        </div>
+
+        <div class="presc-header-card">
+          <h2>វេជ្ជបញ្ជា / Prescription</h2>
+          <p>បង្កើត និងគ្រប់គ្រងវេជ្ជបញ្ជាសម្រាប់អ្នកជំងឺ</p>
+        </div>
+
+        <div class="presc-info-card">
+          <strong>ព័ត៌មានអ្នកជំងឺ / Patient Info</strong>
+          <div class="presc-info-flex">
+            <div>ឈ្មោះ / Name: <b id="rxPatientName">—</b></div>
+            <div>ភេទ/អាយុ · Gender/Age: <b id="rxPatientGenderAge">—</b></div>
+            <div>លេខទូរស័ព្ទ / Phone: <b id="rxPatientPhone">—</b></div>
+            <div>គ្រូពេទ្យ / Doctor: <b id="rxPatientDoctor">—</b></div>
+          </div>
+          <p class="presc-hint" id="rxNoPatientHint" style="display:none;">⚠️ សូមបំពេញឈ្មោះអ្នកជំងឺនៅផ្ទាំង "វិក្កយបត្រ" សិន ដើម្បីភ្ជាប់វេជ្ជបញ្ជាទៅអ្នកជំងឺនេះ។</p>
+        </div>
+
+        <div class="presc-form-card" id="rxAddCard">
+          <h3 id="rxAddCardTitle">បន្ថែមថ្នាំ / Add Medication</h3>
+          <div class="presc-input-row" id="rxAddCardInputRow">
+            <div class="presc-flex-2">
+              <label>ឈ្មោះថ្នាំ / Medication Name</label>
+              <input type="text" id="rxMedName" list="rxMedOptions" placeholder="ឧ. Amoxicillin 500mg" oninput="onRxMedNameChange()" onkeydown="if(event.key==='Enter'){event.preventDefault();addMedication();}">
+              <datalist id="rxMedOptions"></datalist>
+            </div>
+            <div class="presc-flex-2">
+              <label>របៀបប្រើ / Dosage &amp; Instructions</label>
+              <input type="text" id="rxMedDosage" placeholder="ឧ. 1 គ្រាប់ x 3ដង/ថ្ងៃ x 5ថ្ងៃ" onkeydown="if(event.key==='Enter'){event.preventDefault();addMedication();}">
+            </div>
+            <div class="presc-flex-08">
+              <label>ចំនួន / Qty</label>
+              <input type="number" id="rxMedQty" min="1" value="1" onkeydown="if(event.key==='Enter'){event.preventDefault();addMedication();}">
+            </div>
+            <div class="presc-btn-wrapper">
+              <button class="presc-btn-add" onclick="addMedication()">➕ បន្ថែម</button>
+            </div>
+          </div>
+
+          <table class="presc-table">
+            <thead>
+              <tr>
+                <th style="width:36px;">ល.រ</th>
+                <th>ឈ្មោះថ្នាំ</th>
+                <th>របៀបប្រើ</th>
+                <th class="text-center" style="width:60px;">ចំនួន</th>
+                <th style="width:40px;" id="rxDelColHeader"></th>
+              </tr>
+            </thead>
+            <tbody id="rxMedList">
+              <tr><td colspan="5" class="text-center text-muted">មិនទាន់មានថ្នាំបញ្ចូលនៅឡើយទេ</td></tr>
+
+            </tbody>
+          </table>
+
+          <div class="presc-save-wrapper">
+            <button class="presc-btn-print" id="rxPrintBtn" onclick="savePrescriptionAndPrint()">🖨️ បោះពុម្ព</button>
+            <button class="presc-btn-save" id="rxSaveBtn" onclick="savePrescription()">💾 រក្សាទុកវេជ្ជបញ្ជា</button>
+          </div>
+
+          <div class="rx-print-only rx-print-signature">
+            <div class="rx-sig-line"></div>
+            <div>ហត្ថលេខាគ្រូពេទ្យ<br>Doctor Signature</div>
+          </div>
+        </div>
+
+        <div class="presc-form-card" id="rxHistoryCard">
+          <h3>ប្រវត្តិវេជ្ជបញ្ជា / Prescription History</h3>
+          <div id="rxHistoryList">
+            <p class="text-muted text-center">សូមបញ្ចូលឈ្មោះអ្នកជំងឺនៅផ្ទាំង "វិក្កយបត្រ" សិន</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</div>
+
+    <script src="main.js"></script>
+
+</body>
+</html>

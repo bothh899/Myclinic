@@ -126,20 +126,34 @@
   .clinic-logo-img{
     width:46px; height:46px; border-radius:10px; object-fit:cover;
     background:#fff; flex-shrink:0;
-    box-shadow:0 1px 4px rgba(0,0,0,0.15);
   }
 
   /* ---- invoice: print-only letterhead (hidden on screen) ---- */
-  .inv-print-only{display:none;}
+  .inv-print-only{display:none !important;}
   .inv-print-letterhead{
     padding:0 0 8px;
     border-bottom:2px solid var(--teal-dark);
     margin-bottom:6px;
-    color:#222;
+    color:#409a99;
   }
+
+  /* ------------------------------------------------ */
+  /* Code បន្ថែមដើម្បីឱ្យឈ្មោះ clinic ចេញមកដិតច្បាស់ */
+  /* ------------------------------------------------ */
+  .clinic-title, 
+  .clinic-name, 
+  .inv-header h1, 
+  .inv-header h2,
+  .inv-header div {
+    font-weight: 900 !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
   .inv-print-top{display:flex; justify-content:space-between; align-items:flex-start; gap:14px;}
   .inv-print-brand{display:flex; align-items:center; gap:10px;}
-  .inv-print-logo{width:120px; height:120px; border-radius:12px; object-fit:contain; border:none; box-shadow:none;}
+  .inv-print-logo{width:58px; height:58px; border-radius:10px; object-fit:contain; border:none; box-shadow:none;}
   .inv-print-name-kh{font-size:19px; font-weight:700; color:var(--teal-dark);}
   .inv-print-name-en{font-size:11px; font-weight:700; color:#333; letter-spacing:.03em; margin-top:1px;}
   .inv-print-contact{text-align:right; font-size:11px; color:#333; line-height:1.6;}
@@ -152,13 +166,14 @@
   .inv-print-col{display:flex; flex-direction:column; gap:4px;}
   .inv-print-col b{font-weight:700; color:#111;}
 
-  .clinic-name-display{
-    font-size:26px;
-    font-weight:700;
-    color:#fff;
-    text-align:center;
-    line-height:1.25;
-  }
+  .clinic-name-display {
+    font-family: 'Arial', sans-serif !important;
+    font-weight: 900 !important;
+    font-size: 26px;
+    color: #000000 !important; /* ប្តូរទៅជាពណ៌ខ្មៅដិតខ្លាំង */
+    text-align: center;
+    line-height: 1.25;
+}         
   .clinic-sub-display{
     display:block;
     font-size:12.5px;
@@ -548,61 +563,111 @@
   .service-manage-item .del-btn{font-size:13px;}
 
   /* ============ RESPONSIVE ============ */
-  @media (max-width:480px){
-    .app-brand-title{display:none;}
-    .app-brand-sub{max-width:90px;}
-    .tab-label{display:none;}
-    .tab-btn{padding:9px 6px;}
-    .new-invoice-label{display:none;}
-    .new-invoice-btn{padding:9px 11px;}
-    .detail-grid{grid-template-columns:1fr;}
-    .print-btn-label{display:none;}
-    .print-btn{padding:13px 15px;}
+@media print {
+  @page { 
+    size: A5; 
+    margin: 0; 
   }
 
-  @media print{
-    @page{ size: A5; margin:0; }
-    *{
-      -webkit-print-color-adjust:exact !important;
-      print-color-adjust:exact !important;
-      color-adjust:exact !important;
-    }
-    body{
-      background:#fff;
-      padding:8mm 9mm;
-    }
-    .app-nav, .toast-container, .modal-overlay{display:none !important;}
-    .app-main{max-width:100%; padding:0; margin:0;}
-    .view{display:none !important;}
-    #view-invoice{display:block !important;}
-    .card{box-shadow:none; max-width:100%; margin-top:0; border:none;}
-    .header{display:none !important;}
-    .inv-print-only{display:block !important;}
-    .add-row, .del-btn, .clear-link, .chart-hint, .service-box, .chart-box, .quad-btns, .quad-header{display:none !important;}
-    .section-label, #invDetailsBlock, #patientDetailsBlock{display:none !important;}
-    .inv-print-btn-row{display:none !important;}
-    .body{gap:2px;}
-    .inv-summary-row{border-top:none; padding-top:6px; margin-top:4px;}
-    .inv-notes-textarea{background:transparent; min-height:50px;}
-    .inv-inline-inputs input, .inv-inline-input-solo, .inv-inline-inputs select{
-      border:none; background:transparent; -webkit-appearance:none; appearance:none; padding:0; width:auto;
-    }
-    .screen-table{display:none !important;}
-    .print-table{display:table !important;}
-    table.items input{border:none; background:transparent; -webkit-appearance:none; appearance:none; padding-left:0;}
-    table.items th{padding:5px 4px;}
-    table.items td{padding:5px 4px;}
-    table.items{margin-top:6px;}
-    .signature-box{margin-top:75px;}
-    .signature-label{font-weight:700;}
-    .inv-print-details, .inv-print-address, .inv-print-contact{font-weight:600;}
-    .inv-print-col b{font-weight:800;}
-    table.print-table th{font-weight:800;}
-    table.print-table td{font-weight:600;}
-    .inv-totals-table td{font-weight:700;}
-    .inv-totals-table td:first-child span{font-weight:500;}
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
+  body {
+    background: #fff;
+    padding: 8mm 9mm;
+  }
+
+  /* ផ្នែក Footer នៅបាតក្រោម */
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    background-color: #ffffff;
+    border-top: 1px solid #eee;
+    font-size: 10px;
+  }
+
+/* ក្បាលវិក្កយបត្រពេលបោះពុម្ព — Logo + ចំណងជើង INVOICE */
+.inv-print-header {
+  text-align: left;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #1a1a1a;
+}
+.inv-print-header #invPrintLogo {
+  width: 80px;
+  height: auto;
+  margin: 0 0 8px;
+  display: block;
+}
+.inv-print-header h1 {
+  font-size: 20px;
+  margin: 0 0 8px;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+/* លាក់ Elements មិនចាំបាច់ពេល Print */
+  .app-nav, .toast-container, .modal-overlay { display: none !important; }
+  .app-shell { min-height: 0 !important; display: block !important; }
+  .app-main { max-width: 100%; padding: 0; margin: 0; }
+    .view { display: none !important; }
+  #view-invoice { display: block !important; }
+  .card { box-shadow: none; max-width: 100%; margin-top: 0; border: none; }
+  .header { display: none !important; }
+  .inv-print-only { display: block !important; }
+  .add-row, .del-btn, .clear-link, .chart-hint, .service-box, .chart-box, .quad-btns, .quad-header { display: none !important; }
+  .section-label, #invDetailsBlock, #patientDetailsBlock { display: none !important; }
+  .inv-print-btn-row { display: none !important; }
+  .screen-table { display: none !important; }
+
+  /* ការកំណត់ទម្រង់ Table និង Layout */
+  .body { gap: 2px; }
+  .inv-summary-row { border-top: none; padding-top: 6px; margin-top: 4px; }
+  .inv-notes-textarea { background: transparent; min-height: 50px; }
+  
+  .inv-inline-inputs input, 
+  .inv-inline-input-solo, 
+  .inv-inline-inputs select {
+    border: none; 
+    background: transparent; 
+    -webkit-appearance: none; 
+    appearance: none; 
+    padding: 0; 
+    width: auto;
+  }
+
+  .print-table { display: table !important; }
+  table.items input { border: none; background: transparent; -webkit-appearance: none; appearance: none; padding-left: 0; }
+  table.items th { padding: 5px 4px; }
+  table.items td { padding: 5px 4px; }
+  table.items { margin-top: 6px; }
+  
+  .signature-box { margin-top: 75px; }
+  .signature-label { font-weight: 700; }
+  .inv-print-details, .inv-print-address, .inv-print-contact { font-weight: 600; }
+  
+  .inv-print-details {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+    gap: 14px !important;
+  }
+  
+  .inv-print-col { flex: 1 1 0 !important; }
+  .inv-print-col b { font-weight: 800; }
+  table.print-table th { font-weight: 800; }
+  table.print-table td { font-weight: 600; }
+  .inv-totals-table td { font-weight: 700; }
+  .inv-totals-table td:first-child span { font-weight: 500; }
+}
   /* រចនាប័ទ្មសម្រាប់ផ្នែកវេជ្ជបញ្ជា */
 #prescriptionSection .presc-header-card {
   background: #ffc107;
@@ -793,7 +858,7 @@
   margin-bottom:16px;
   border-bottom:2px solid #00897b;
 }
-.rx-print-title #rxClinicLogoImg{width:70px; height:70px; border-radius:10px; object-fit:cover; margin-bottom:6px;}
+.rx-print-title #rxClinicLogoImg{width:44px; height:44px; border-radius:10px; object-fit:cover; margin-bottom:6px;}
 .rx-print-title #rxClinicNameDisplay{font-size:22px; font-weight:700; color:#00897b;}
 .rx-print-title #rxClinicSubDisplay{font-size:12px; color:#555; margin-top:2px;}
 .rx-print-title h1{font-size:17px; margin:10px 0 2px; color:#333;}
@@ -806,44 +871,12 @@
 .rx-print-signature div:last-child{font-size:11px; color:#666; text-align:center; width:180px; line-height:1.4;}
 
 @media print{
-  /* លាក់ជួរបញ្ចុះថ្លៃ Discount មិនឲ្យ Print ចេញមក */
-  #discountRow {
-    display: none !important;
-  }
   *{
     -webkit-print-color-adjust:exact !important;
     print-color-adjust:exact !important;
     color-adjust:exact !important;
-  };
-/* ១. កំណត់ Container ឱ្យ Logo នៅខាងលើ និងឈ្មោះគ្លីនិកនៅខាងក្រោម */
-.inv-print-header, .invoice-header, .inv-header {
-  display: flex !important;
-  flex-direction: column !important;    /* តម្រៀបជាជួរឈរ (Logo លើ ឈ្មោះក្រោម) */
-  align-items: center !important;        /* ដាក់ឱ្យនៅចំកណ្តាល (ឬដូរទៅ flex-start បើចង់ឱ្យនៅខាងឆ្វេង) */
-  justify-content: center !important;
-  gap: 8px !important;                   /* គម្លាតរវាង Logo និងឈ្មោះខាងក្រោម */
-  margin-bottom: 20px !important;        /* គម្លាតឃ្លាតពីតារាងខាងក្រោម */
-  text-align: center !important;
-}
-
-/* ២. កំណត់ទំហំ Logo ឱ្យធំច្បាស់ស្អាត */
-#invPrintLogo, #clinicLogoImg {
-  height: 90px !important;               /* ដំឡើង/បន្ថយកម្ពស់ Logo តាមចិត្ត (e.g. 80px, 100px, 110px) */
-  width: auto !important;
-  max-height: none !important;
-  max-width: none !important;
-  object-fit: contain !important;
-  margin: 0 !important;
-}
-
-/* ៣. កែសម្រួលឈ្មោះគ្លីនិកដែលនៅពីក្រោម Logo */
-#invPrintNameKh, #clinicNameDisplay {
-  white-space: nowrap !important;        /* មិនឱ្យចុះបន្ទាត់ */
-  font-size: 20px !important;            /* ទំហំអក្សរ */
-  font-weight: bold !important;
-  line-height: 1.2 !important;
-  margin: 0 !important;
-}
+  }
+  
   body.print-rx .app-nav, body.print-rx .toast-container, body.print-rx .modal-overlay{display:none !important;}
   body.print-rx .app-main{max-width:100%; padding:0; margin:0;}
   body.print-rx .view{display:none !important;}

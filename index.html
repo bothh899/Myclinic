@@ -52,46 +52,29 @@
 
         <div class="header">
           <div class="logo-row">
-            <img id="clinicLogoImg" class="clinic-logo-img" style="display:none;" alt="Logo">
+            <img id="clinicLogoImg" class="clinic-logo-img" style="display:block;" alt="Logo">
             <div class="clinic-name-display" id="clinicNameDisplay">We Trust Dental Clinic</div>
           </div>
           <div class="clinic-sub-display" id="clinicSubDisplay">Tel: 092 463 646 | Phnom Penh, Cambodia</div>
           <div class="clinic-sub-display clinic-fb-display" id="clinicFbDisplay"></div>
         </div>
 
-        <!-- ============ PRINT-ONLY LETTERHEAD ============ -->
-        <div class="inv-print-only inv-print-letterhead">
-          <div class="inv-print-top">
-            <div class="inv-print-brand">
-              <img id="invPrintLogo" class="inv-print-logo" style="display:none;" alt="Logo">
-              <div class="inv-print-brand-text">
-                <div class="inv-print-name-kh" id="invPrintNameKh">We Trust Dental Clinic</div>
-              </div>
-            </div>
-            <div class="inv-print-contact">
-              <div id="invPrintEmailRow">Email: <span id="invPrintEmail"></span></div>
-              <div id="invPrintWebsiteRow">Website: <span id="invPrintWebsite"></span></div>
-              <div id="invPrintFbRow">Facebook: <span id="invPrintFb"></span></div>
-              <div id="invPrintPhoneRow">Tel: <span id="invPrintPhone"></span></div>
-            </div>
+    <!-- ============ PRINT-ONLY LETTERHEAD ============ -->
+  <div class="inv-print-only inv-print-header">
+    <img id="invPrintLogo" class="clinic-logo-img" alt="Logo">
+    <h1>វិក្កយបត្រ / INVOICE</h1>
+  </div>
+        <div class="inv-print-only inv-print-details">
+          <div class="inv-print-col">
+            <div>Invoice No : <b id="invPrintNo"></b></div>
+            <div>Date : <b id="invPrintDate"></b></div>
+            <div>Cashier : <b id="invPrintCashier"></b></div>
+            <div>Doctor : <b id="invPrintDoctor"></b></div>
           </div>
-          <div class="inv-print-address" id="invPrintAddress"></div>
-          <div class="inv-print-title">
-            <div class="inv-print-title-kh">វិក្កយបត្រ</div>
-            <div class="inv-print-title-en">INVOICE</div>
-          </div>
-          <div class="inv-print-details">
-            <div class="inv-print-col">
-              <div>Invoice No : <b id="invPrintNo"></b></div>
-              <div>Date : <b id="invPrintDate"></b></div>
-              <div>Cashier : <b id="invPrintCashier"></b></div>
-              <div>Doctor : <b id="invPrintDoctor"></b></div>
-            </div>
-            <div class="inv-print-col">
-              <div>Patient Name : <b id="invPrintPatientName"></b></div>
-              <div>Sex : <b id="invPrintGender"></b>&nbsp;&nbsp;&nbsp;Age : <b id="invPrintAge"></b></div>
-              <div>Tel : <b id="invPrintPatientPhone"></b></div>
-            </div>
+          <div class="inv-print-col">
+            <div>Patient Name : <b id="invPrintPatientName"></b></div>
+            <div>Sex : <b id="invPrintGender"></b>&nbsp;&nbsp;&nbsp;Age : <b id="invPrintAge"></b></div>
+            <div>Tel : <b id="invPrintPatientPhone"></b></div>
           </div>
         </div>
 
@@ -284,12 +267,16 @@
             </button>
           </div>
 
-          <div class="signature-box">
-            <div class="signature-line"></div>
-            <div class="signature-label">ហត្ថលេខាអ្នកគិតលុយ<br>Cashier Signature</div>
-          </div>
+<div class="signature-box">
+  <div class="signature-line"></div>
+  <div class="signature-label">ហត្ថលេខាអ្នកគិតលុយ<br>Cashier Signature</div>
+</div>
 
-          <button class="clear-link" onclick="clearAll()">សម្អាតទាំងអស់ / Clear</button>
+<div class="inv-print-only footer">
+# 428 st,60k Tagnon village, sangkat kakab,khan porsenchey ,Phnom penh |Tel: 092 463 646/ 093 86 89 96
+</div>
+
+<button class="clear-link" onclick="clearAll()">សម្អាតទាំងអស់ / Clear</button>
         </div>
       </div>
     </section>
@@ -449,21 +436,20 @@
             </div>
           </div>
 
-          <table class="presc-table">
-            <thead>
-              <tr>
-                <th style="width:36px;">ល.រ</th>
-                <th>ឈ្មោះថ្នាំ</th>
-                <th>របៀបប្រើ</th>
-                <th class="text-center" style="width:60px;">ចំនួន</th>
-                <th style="width:40px;" id="rxDelColHeader"></th>
-              </tr>
-            </thead>
-            <tbody id="rxMedList">
-              <tr><td colspan="5" class="text-center text-muted">មិនទាន់មានថ្នាំបញ្ចូលនៅឡើយទេ</td></tr>
-
-            </tbody>
-          </table>
+    <table class="presc-table">
+  <thead>
+    <tr>
+      <th style="width:36px;">ល.រ</th>
+      <th>ឈ្មោះថ្នាំ</th>
+      <th>របៀបប្រើ</th>
+      <th class="text-center" style="width:60px;">ថ្ងៃ</th>
+      <th style="width:40px;" id="rxDelColHeader"></th>
+    </tr>
+  </thead>
+  <tbody id="rxMedList">
+    <tr><td colspan="5" class="text-center text-muted">មិនទាន់មានថ្នាំបញ្ចូលនៅឡើយទេ</td></tr>
+  </tbody>
+</table>
 
           <div class="presc-save-wrapper">
             <button class="presc-btn-print" id="rxPrintBtn" onclick="savePrescriptionAndPrint()">🖨️ បោះពុម្ព</button>

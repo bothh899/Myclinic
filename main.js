@@ -371,8 +371,8 @@ function cycleTooth(num){
 
   if(next==='normal'){
     delete toothState[num];
-    const idx = rows.findIndex(r=>String(r.tooth)===String(num));
-    if(idx!==-1 && !rows[idx].treatment){
+    const idx = rows.findIndex(r=>String(r.tooth)===String(num) && !r.treatment);
+    if(idx!==-1){
       rows.splice(idx,1);
       pendingToothIndices = pendingToothIndices.filter(i=>i!==idx).map(i=>i>idx ? i-1 : i);
       renderRows();
@@ -386,12 +386,14 @@ function cycleTooth(num){
   toothState[num] = next;
   saveToothChart();
 
-  let idx = rows.findIndex(r=>String(r.tooth)===String(num));
+  let idx = rows.findIndex(r=>String(r.tooth)===String(num) && !r.treatment);
   if(idx===-1){
     rows.push({tooth:num, treatment:'', qty:1, price:0});
     idx = rows.length-1;
   }
-  pendingToothIndices = [idx];
+  if(!pendingToothIndices.includes(idx)){
+    pendingToothIndices.push(idx);
+  }
   renderRows();
   renderTeeth();
   updatePendingLabel();
@@ -450,7 +452,7 @@ function applyPendingSelection(nums){
     if(!(toothState[num]==='untreated' || toothState[num]==='treated')){
       toothState[num] = 'untreated';
     }
-    let idx = rows.findIndex(r=>String(r.tooth)===String(num));
+    let idx = rows.findIndex(r=>String(r.tooth)===String(num) && !r.treatment);
     if(idx===-1){
       rows.push({tooth:num, treatment:'', qty:1, price:0});
       idx = rows.length-1;
@@ -568,48 +570,22 @@ function onServiceInputChange(){
   }
 }
 async function addServiceToInvoice(){
-
   const name = document.getElementById('serviceInput').value.trim();
   const price = parseFloat(document.getElementById('servicePriceInput').value);
   const qty = parseFloat(document.getElementById('serviceQtyInput').value) || 1;
   if(!name || isNaN(price)) return;
 
-  // ពិនិត្យមើលថាតើសេវាជា Scaling ឬ X-Ray ឬការជ្រើសរើស Full Mouth
-  const isFullMouthService = name.toLowerCase().includes('scaling') || name.toLowerCase().includes('x-ray');
-
   if(pendingToothIndices.length>0){
-    // បើសិនជាជ្រើសរើសធ្មេញទាំងអស់ (Full Mouth ស្មើ ៣២ ធ្មេញ) ឬជាសេវា Scaling/X-Ray
-    if (pendingToothIndices.length === 32 || isFullMouthService) {
-      // ទុកតែជួរទីមួយ ហើយដាក់ឈ្មោះធ្មេញជា "Full Mouth"
-      const firstIdx = pendingToothIndices[0];
-      
-      // លុបជួរធ្មេញផ្សេងទៀតដែលរាយលេខចោល
-      for (let i = pendingToothIndices.length - 1; i > 0; i--) {
-        const idxToRemove = pendingToothIndices[i];
-        rows.splice(idxToRemove, 1);
+    pendingToothIndices.forEach(idx=>{
+      if(rows[idx]){
+        rows[idx].treatment = name;
+        rows[idx].price = price;
+        rows[idx].qty = qty;
       }
-      
-      if(rows[firstIdx]){
-        rows[firstIdx].tooth = 'Full Mouth';
-        rows[firstIdx].treatment = name;
-        rows[firstIdx].price = price;
-        rows[firstIdx].qty = qty;
-      }
-    } else {
-      // ប្រសិនបើជ្រើសរើសធ្មេញធម្មតា បញ្ចូលឈ្មោះសេវា និងតម្លៃតាមលេខធ្មេញនីមួយៗ
-      pendingToothIndices.forEach(idx=>{
-        if(rows[idx]){
-          rows[idx].treatment = name;
-          rows[idx].price = price;
-          rows[idx].qty = qty;
-        }
-      });
-    }
+    });
     pendingToothIndices = [];
   }else{
-    // បើមិនបានចុចរើសធ្មេញទេ ប៉ុន្តែសេវានោះជា Scaling/X-Ray ឲ្យចេញ Full Mouth
-    const toothValue = isFullMouthService ? 'Full Mouth' : '';
-    rows.push({tooth: toothValue, treatment: name, qty: qty, price: price});
+    rows.push({tooth:'', treatment:name, qty:qty, price:price});
   }
 
   const exists = presetServices.some(s=>s.name===name);
@@ -655,7 +631,6 @@ function compactToothRange(teethArr){
   return sorted.join(', ');
 }
 function renderPrintRows(){
-
   const tbody = document.getElementById('printRows');
   if(rows.length===0){
     tbody.innerHTML = '<tr class="empty-row"><td colspan="5">មិនទាន់មានធាតុនៅឡើយទេ</td></tr>';
@@ -666,23 +641,16 @@ function renderPrintRows(){
   rows.forEach(r=>{
     const key = (r.treatment||'')+'|'+(r.price||0);
     if(!groups[key]){
-      groups[key] = {treatment:r.treatment, price:Number(r.price)||0, teeth:[], qty:0, rawTooth: r.tooth};
+      groups[key] = {treatment:r.treatment, price:Number(r.price)||0, teeth:[], qty:0};
       order.push(key);
     }
     if(r.tooth!=='' && r.tooth!=null) groups[key].teeth.push(r.tooth);
     groups[key].qty += (r.qty||0);
   });
-
   tbody.innerHTML = order.map(key=>{
     const g = groups[key];
     const subtotal = g.qty * g.price;
-    
-    // ត្រង់នេះ៖ ឆែកមើលបើមានពាក្យ "Full Mouth" ឬរើសធ្មេញគ្រប់ ៣២ ឱ្យចេញពាក្យ Full Mouth ពេល Print
-    let toothLabel = compactToothRange(g.teeth);
-    if (g.rawTooth === 'Full Mouth' || g.teeth.includes('Full Mouth') || g.teeth.length === 32) {
-      toothLabel = 'Full Mouth';
-    }
-
+    const toothLabel = compactToothRange(g.teeth);
     const priceLabel = g.price===0 ? 'Free' : '$'+g.price.toFixed(2);
     const subtotalLabel = g.price===0 ? 'Free' : '$'+subtotal.toFixed(2);
     return `<tr>
@@ -805,7 +773,6 @@ async function saveInvoiceAndPrint() {
   const surname = document.getElementById('surname').value.trim();
   const givenName = document.getElementById('givenName').value.trim();
   const fullName = (surname + ' ' + givenName).trim();
-  const wasEditingExisting = !!loadedInvoiceId; // ចាប់ទុកមុននឹងកំណត់ id ថ្មី៖ តើនេះជាការកែសម្រួលវិក្កយបត្រចាស់ ឬបង្កើតថ្មី?
 
   if (fullName && rows.length > 0) {
     if (!loadedInvoiceId && !document.getElementById('invoiceNo').value.trim()) {
@@ -848,11 +815,8 @@ async function saveInvoiceAndPrint() {
     invoiceIndex = invoiceIndex.filter(r => r.id !== id);
     invoiceIndex.unshift(invoiceRecordToIndexEntry(id, record));
     applyHistoryFilters();
-    showToast(wasEditingExisting ? 'វិក្កយបត្របានធ្វើបច្ចុប្បន្នភាពរួចរាល់' : 'វិក្កយបត្របានរក្សាទុករួចរាល់', 'success');
-    // សម្អាតទម្រង់ដោយស្វ័យប្រវត្តិ តែសម្រាប់វិក្កយបត្រថ្មីប៉ុណ្ណោះ។
-    // ប្រសិនបើកំពុងកែសម្រួលវិក្កយបត្រចាស់ ត្រូវទុកឲ្យវានៅដដែលក្រោយពេលបោះពុម្ព
-    // ដើម្បីកុំឲ្យ save លើកក្រោយបង្កើតកំណត់ត្រាថ្មីស្ទួន (multi loop ជាន់គ្នា)។
-    autoClearAfterPrint = !wasEditingExisting;
+    showToast('វិក្កយបត្របានរក្សាទុករួចរាល់', 'success');
+    autoClearAfterPrint = true;
   }
   fillPrintLetterhead();
   window.print();
@@ -861,7 +825,6 @@ function fillPrintLetterhead(){
   const setText = (id, val)=>{ const el = document.getElementById(id); if(el) el.textContent = val || ''; };
   const surname = document.getElementById('surname').value.trim();
   const givenName = document.getElementById('givenName').value.trim();
-  setText('invPrintNo', document.getElementById('invoiceNo').value);
   const dateVal = document.getElementById('invDate').value;
   let dateLabel = dateVal;
   if(dateVal){
@@ -1170,44 +1133,98 @@ function refreshPrescriptionView(){
   loadRxDraft();
   loadRxHistory();
 }
-function renderRxMedTable(){
-  const tbody = document.getElementById('rxMedList');
-  if(rxMedications.length===0){
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">មិនទាន់មានថ្នាំបញ្ចូលនៅឡើយទេ</td></tr>';
-    return;
-  }
-  tbody.innerHTML = rxMedications.map((m,idx)=>`
-    <tr>
-      <td>${idx+1}</td>
-      <td>${esc(m.name)}</td>
-      <td>${esc(m.dosage)}</td>
-      <td class="text-center">${esc(String(m.qty))}</td>
-      <td><button class="del-btn" onclick="removeMedication(${idx})">✕</button></td>
-    </tr>`).join('');
-}
 function addMedication(){
   const nameEl = document.getElementById('rxMedName');
   const dosageEl = document.getElementById('rxMedDosage');
   const qtyEl = document.getElementById('rxMedQty');
-  const name = nameEl.value.trim();
-  const dosage = dosageEl.value.trim();
-  const qty = parseInt(qtyEl.value) || 1;
-  if(!name){ nameEl.focus(); showToast('សូមបញ្ចូលឈ្មោះថ្នាំ', 'error'); return; }
-  rxMedications.push({name, dosage, qty});
+
+  const name = nameEl ? nameEl.value.trim() : '';
+  const dosage = dosageEl ? dosageEl.value.trim() : '';
+  const qty = qtyEl ? (parseInt(qtyEl.value) || 1) : 1;
+  const days = 0; // កំណត់ 0 ដោយស្វ័យប្រវត្តិ (មិនបាច់មាន input days ទេ)
+
+  if(!name){ 
+    if(nameEl) nameEl.focus(); 
+    if(typeof showToast === 'function') showToast('សូមបញ្ចូលឈ្មោះថ្នាំ', 'error'); 
+    return; 
+  }
+
+  rxMedications.push({name, dosage, qty, days});
   renderRxMedTable();
-  saveRxDraft();
+  if(typeof saveRxDraft === 'function') saveRxDraft();
+
+  // Reset input វិញក្រោយបន្ថែមរួច
+  if(nameEl) nameEl.value = '';
+  if(dosageEl) dosageEl.value = '';
+  if(qtyEl) qtyEl.value = '1';
+}
+
+function addMedication(){
+  const nameEl = document.getElementById('rxMedName');
+  const dosageEl = document.getElementById('rxMedDosage');
+  const qtyEl = document.getElementById('rxMedQty');
+
+  const name = nameEl ? nameEl.value.trim() : '';
+  const dosage = dosageEl ? dosageEl.value.trim() : '';
+  const qty = qtyEl ? (parseInt(qtyEl.value) || 1) : 1;
+  const days = 0; // កំណត់ 0 ដោយស្វ័យប្រវត្តិ (មិនបាច់មាន input days ទេ)
+
+  if(!name){ 
+    if(nameEl) nameEl.focus(); 
+    if(typeof showToast === 'function') showToast('សូមបញ្ចូលឈ្មោះថ្នាំ', 'error'); 
+    return; 
+  }       
+
+  rxMedications.push({name, dosage, qty, days});
+  renderRxMedTable();
+  if(typeof saveRxDraft === 'function') saveRxDraft();
+
+  // Reset input វិញក្រោយបន្ថែមរួច
+  if(nameEl) nameEl.value = '';
+  if(dosageEl) dosageEl.value = '';
+  if(qtyEl) qtyEl.value = '1';
+}
+
+function renderRxMedTable() {
+  const tbody = document.getElementById('rxMedList');
+  if (!tbody) return;
+
+  if (rxMedications.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">មិនទាន់មានថ្នាំបញ្ចូលនៅឡើយទេ</td></tr>`;
+    return;
+  }
+
+  // 💡 កែប្រែកន្លែងនេះ៖ ឱ្យត្រូវតាម ៥ ជួរឈរ (ល.រ, ឈ្មោះថ្នាំ, របៀបប្រើ, ចំនួន, ប៊ូតុងលុប)
+  tbody.innerHTML = rxMedications.map((med, index) => `
+    <tr>
+      <td class="text-center">${index + 1}</td>
+      <td><b>${med.name}</b></td>
+      <td>${med.dosage || '-'}</td>
+      <td class="text-center">${med.qty}</td>
+      <td class="text-center">
+        <button type="button" onclick="removeMedication(${index})" style="color:red; border:none; background:none; cursor:pointer;">❌</button>
+      </td>
+    </tr>
+  `).join('');
+}
+function removeMedication(index) {
+  rxMedications.splice(index, 1);
+  renderRxMedTable();
+  if(typeof saveRxDraft === 'function') saveRxDraft();
+}
 
   const exists = presetMedications.some(m=>m.name===name);
   if(!exists){
-    presetMedications.push({id:'m'+Date.now(), name, dosage});
+ 
+    
     savePresetMedications();
     renderMedOptions();
     renderMedManageList();
   }
 
-  nameEl.value=''; dosageEl.value=''; qtyEl.value=1;
-  nameEl.focus();
-}
+  
+
+
 function removeMedication(idx){
   rxMedications.splice(idx,1);
   renderRxMedTable();
@@ -1231,7 +1248,7 @@ async function loadRxHistory(){
   }
   list.innerHTML = entries.slice().reverse().map(e=>{
     const meds = (e.items||[]).map(m=>
-      `<div class="presc-history-med">💊 ${esc(m.name)} ${m.dosage?('— '+esc(m.dosage)):''} ${m.qty?('(x'+esc(String(m.qty))+')'):''}</div>`
+      `<div class="presc-history-med">💊 ${esc(m.name)} ${m.dosage?('— '+esc(m.dosage)):''} ${m.qty?('(x'+esc(String(m.qty))+')'):''} ${m.days?(' · '+esc(String(m.days))+'ថ្ងៃ'):''}</div>`
     ).join('');
     return `<div class="presc-history-item">
       <div class="presc-history-date">${esc(e.date)}</div>
